@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainy Blitz - Rapid Fire Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        .question-box { font-size: 20px; margin: 20px 0; }
+        .options button { display: block; width: 100%; padding: 10px; margin: 5px 0; }
+        .timer { font-size: 18px; color: red; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brainy Blitz - Rapid Fire Round</h1>
+        <div id="quiz-container">
+            <p class="timer">Time Left: <span id="timer">10</span> seconds</p>
+            <div id="question-box" class="question-box"></div>
+            <div id="options" class="options"></div>
+        </div>
+        <button id="next-btn" class="hidden">Next Question</button>
+        <h2 id="score" class="hidden"></h2>
+    </div>
+    
+    <script>
+        const questions = [
+            { question: "What is the time complexity of binary search?", options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"], answer: "O(log n)" },
+            { question: "Which language is used for web development?", options: ["Python", "Java", "JavaScript", "C++"], answer: "JavaScript" }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 10;
+        let timer;
+        
+        function startTimer() {
+            timeLeft = 10;
+            document.getElementById("timer").innerText = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+        
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                document.getElementById("quiz-container").innerHTML = "<h2>Quiz Completed!</h2>";
+                document.getElementById("score").innerText = `Final Score: ${score}`;
+                document.getElementById("score").classList.remove("hidden");
+                return;
+            }
+            
+            document.getElementById("question-box").innerText = questions[currentQuestion].question;
+            document.getElementById("options").innerHTML = "";
+            
+            questions[currentQuestion].options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.onclick = () => checkAnswer(option);
+                document.getElementById("options").appendChild(button);
+            });
+            
+            startTimer();
+        }
+        
+        function checkAnswer(selected) {
+            clearInterval(timer);
+            if (selected === questions[currentQuestion].answer) {
+                score++;
+            }
+            nextQuestion();
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+        
+        loadQuestion();
+    </script>
+</body>
+</html>
